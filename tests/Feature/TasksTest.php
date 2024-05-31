@@ -71,3 +71,32 @@ it('actualizar el usuario de una tarea', function () {
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
  
  });
+
+ it('filtra las tareas por user_id y término de búsqueda', function () {
+    $this->withoutExceptionHandling();
+
+    // Arrange
+    // Crear dos usuarios
+    $user1 = User::factory()->create(['name' => 'Usuario 1']);
+    $user2 = User::factory()->create(['name' => 'Usuario 2']);
+
+    // Crear tareas para ambos usuarios
+    $task1 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Tarea buscable para Usuario 1']);
+    $task2 = Task::factory()->create(['user_id' => $user2->id, 'name' => 'Tarea buscable para Usuario 2']);
+    $task3 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Tarea no buscable para Usuario 1']);
+
+    // Act
+    // Enviar una solicitud a la ruta index con filtro por user_id y término de búsqueda
+    $response = $this->get('/tasks?user_id=' . $user1->id . '&search=buscable');
+
+    // Assert
+    // Verificar que la respuesta es OK
+    $response->assertStatus(200);
+
+    // Verificar que la respuesta contiene la tarea filtrada y no contiene las tareas no filtradas
+    $response->assertSee($task1->name);
+    $response->assertDontSee($task2->name);
+    $response->assertDontSee($task3->name);
+});
+
+
