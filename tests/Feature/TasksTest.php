@@ -69,5 +69,28 @@ it('actualizar el usuario de una tarea', function () {
     $response = $this->put($task->path(), $data);
  
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
- 
+
  });
+
+ it('filtra tareas por usuario', function () {
+    $this->withoutExceptionHandling();
+
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    Task::factory()->create([
+        'user_id' => $user1->id,
+        'name' => 'Tarea del Usuario 1'
+    ]);
+
+    Task::factory()->create([
+        'user_id' => $user2->id,
+        'name' => 'Tarea del Usuario 2'
+    ]);
+
+    $response = $this->get('/tasks?user_id=' . $user1->id);
+
+    $response->assertStatus(200);
+    $response->assertSee('Tarea del Usuario 1');
+    $response->assertDontSee('Tarea del Usuario 2');
+});
