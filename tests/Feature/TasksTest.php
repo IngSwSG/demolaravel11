@@ -71,3 +71,20 @@ it('actualizar el usuario de una tarea', function () {
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
  
  });
+ 
+ it('verificador del filtro', function () {
+   
+    $user = User::factory()->create();
+   
+
+    Task::factory()->create(['name' => 'Tarea A']);
+    Task::factory()->create(['name' => 'Tarea X', 'user_id' => $user->id]);
+
+    $response = $this->get('/tasks?search=X&user_id=' . $user->id);
+    $response->assertStatus(200);
+    $response->assertSee('Tarea X');
+    $response->assertDontSee('Tarea A');
+   
+
+  
+});
