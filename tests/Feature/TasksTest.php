@@ -71,3 +71,23 @@ it('actualizar el usuario de una tarea', function () {
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
  
  });
+
+ it('filtra las tareas por usuario', function () {
+    // Crear dos usuarios
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    // Crear tareas para cada usuario
+    $task1 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Tarea del usuario 1']);
+    $task2 = Task::factory()->create(['user_id' => $user2->id, 'name' => 'Tarea del usuario 2']);
+    $task3 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Otra tarea del usuario 1']);
+
+    // Hacer una solicitud a la ruta 'tasks.index' filtrando por el primer usuario
+    $response = $this->get(route('tasks.index', ['user_id' => $user1->id]));
+
+    // Verificar que la respuesta contiene solo las tareas del primer usuario
+    $response->assertStatus(200);
+    $response->assertSee('Tarea del usuario 1');
+    $response->assertSee('Otra tarea del usuario 1');
+    $response->assertDontSee('Tarea del usuario 2');
+});
