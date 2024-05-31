@@ -3,7 +3,7 @@
   packages = [
     pkgs.nodejs_20
     pkgs.php
-    pkgs.php81Packages.composer
+    pkgs.php82Packages.composer
   ];
   idx.extensions = [
     "svelte.svelte-vscode"

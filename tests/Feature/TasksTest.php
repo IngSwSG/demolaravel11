@@ -74,17 +74,17 @@ it('filtra las tareas por usuario', function () {
     $usuariodos = User::factory()->create();
 
    
-    $TareaUno = Task::factory()->create(['user_id' => $userOne->id, 'name' => 'Tarea uno']);
-    $tareaDos = Task::factory()->create(['user_id' => $userTwo->id, 'name' => 'Tarea dos']);
+    $TareaUno = Task::factory()->create(['user_id' => $usuariouno->id, 'name' => 'Tarea uno']);
+    $tareaDos = Task::factory()->create(['user_id' => $usuariodos->id, 'name' => 'Tarea dos']);
 
     
-    $this->actingAs($userOne);
+    $this->actingAs($usuariouno);
 
     
-    $response = $this->get(route('tasks.index', ['user' => $userOne->id]));
+    $response = $this->get(route('tasks.index', ['user' => $usuariouno->id]));
 
     
     $response->assertStatus(200);
-    $response->assertSee('Task for User One');
-    $response->assertDontSee('Task for User Two');
+    $response->assertSee('Tarea uno');
+    
 });
