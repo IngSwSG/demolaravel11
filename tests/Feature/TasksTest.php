@@ -6,7 +6,6 @@ use App\Models\User;
 it('muestra la informacion de una tarea', function () {
     $task = Task::factory()->create([
         'name' => 'Tarea nueva'
-    
     ]);
 
     $response = $this->get($task->path());
@@ -35,7 +34,6 @@ it('crea una nueva tarea', function (){
     // ]);
 
      $response->assertRedirect('/tasks');
-
 });
 
 it('actualizar una tarea', function () {
@@ -51,7 +49,6 @@ it('actualizar una tarea', function () {
    $response = $this->put($task->path(), $data);
 
    expect($task->fresh()->name)->toBe('Tarea actualizada');
-
 });
 
 it('actualizar el usuario de una tarea', function () {
@@ -69,5 +66,25 @@ it('actualizar el usuario de una tarea', function () {
     $response = $this->put($task->path(), $data);
  
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
- 
- });
+});
+
+it('filtra las tareas por usuario', function () {
+    
+    $usuariouno = User::factory()->create();
+    $usuariodos = User::factory()->create();
+
+   
+    $TareaUno = Task::factory()->create(['user_id' => $userOne->id, 'name' => 'Tarea uno']);
+    $tareaDos = Task::factory()->create(['user_id' => $userTwo->id, 'name' => 'Tarea dos']);
+
+    
+    $this->actingAs($userOne);
+
+    
+    $response = $this->get(route('tasks.index', ['user' => $userOne->id]));
+
+    
+    $response->assertStatus(200);
+    $response->assertSee('Task for User One');
+    $response->assertDontSee('Task for User Two');
+});
