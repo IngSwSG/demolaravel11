@@ -12,6 +12,4 @@ it('se obtiene la lista de tareas', function(){
             'data' => $tasks->toArray(),
             'page' => 1
         ]);
-       
-
 });
