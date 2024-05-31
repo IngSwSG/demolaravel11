@@ -71,3 +71,28 @@ it('actualizar el usuario de una tarea', function () {
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
  
  });
+
+
+
+
+ // Nueva prueba para verificar el filtro por usuario Actividad 8
+ //Usando la estrutura vista en Clase AAA
+
+it('filtra las tareas por usuario', function () {
+    // Arrange: Crear
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    $task1 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Task 1 for User 1']);
+    $task2 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Task 2 for User 1']);
+    $task3 = Task::factory()->create(['user_id' => $user2->id, 'name' => 'Task for User 2']);
+
+    // Act: Llamar unidad
+    $response = $this->get(route('tasks.index', ['user_id' => $user1->id]));
+
+    // Asserts: Verificar
+    $response->assertStatus(200);
+    $response->assertViewHas('tasks', function ($tasks) use ($task1, $task2, $task3) {
+        return $tasks->contains($task1) && $tasks->contains($task2) && !$tasks->contains($task3);
+    });
+});
