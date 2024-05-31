@@ -38,6 +38,25 @@ it('crea una nueva tarea', function (){
 
 });
 
+//PRUEBA DEL FILTRO
+it('filtra las tareas por user_id', function () 
+{
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    $task1 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Tarea de usuario 1']);
+    $task2 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Otra tarea de usuario 1']);
+    $task3 = Task::factory()->create(['user_id' => $user2->id, 'name' => 'Tarea de usuario 2']);
+
+    $response = $this->get(route('tasks.index', ['user_id' => $user1->id]));
+
+    $response->assertStatus(200);
+
+    $response->assertSee('Tarea de usuario 1');
+    $response->assertSee('Otra tarea de usuario 1');
+    $response->assertDontSee('Tarea de usuario 2');
+});
+
 it('actualizar una tarea', function () {
    $task = Task::factory()->create([
        'name' => 'Tarea vieja'
