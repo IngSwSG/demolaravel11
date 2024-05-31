@@ -6,7 +6,7 @@ use App\Models\User;
 it('muestra la informacion de una tarea', function () {
     $task = Task::factory()->create([
         'name' => 'Tarea nueva'
-    
+
     ]);
 
     $response = $this->get($task->path());
@@ -17,7 +17,7 @@ it('muestra la informacion de una tarea', function () {
 
 it('crea una nueva tarea', function (){
     $this->withoutExceptionHandling();
-    
+
     $user = User::factory()->create();
 
     $data = [
@@ -42,7 +42,7 @@ it('actualizar una tarea', function () {
    $task = Task::factory()->create([
        'name' => 'Tarea vieja'
    ]);
-   
+
    $data = [
        'name' => 'Tarea actualizada',
        'user_id' => $task->user_id
@@ -65,9 +65,41 @@ it('actualizar el usuario de una tarea', function () {
         'name' => 'Tarea vieja',
         'user_id' => $otroUsuario->id
     ];
- 
+
     $response = $this->put($task->path(), $data);
- 
+
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
- 
+
  });
+
+
+it('filtra las tareas por usuario', function () {
+    //Primero se debe de crear dos usuarios
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    // Primero se debe de crear una tarea para cada usuario
+    $task1 = Task::factory()->create([
+        'name' => 'Tarea del usuario 1',
+        'user_id' => $user1->id
+    ]);
+
+    $task2 = Task::factory()->create([
+        'name' => 'Tarea del usuario 2',
+        'user_id' => $user2->id
+    ]);
+
+    // Hacer una solicitud GET a la ruta tasks.index con el user_id del primer usuario
+    $response = $this->get(route('tasks.index', ['user_id' => $user1->id]));
+
+    //Verificar la respuesta de la tarea del primer usuario y no contiene la tarea del segundo usuario
+    $response->assertStatus(200);
+    $response->assertSee('Tarea del usuario 1');
+    $response->assertDontSee('Tarea del usuario 2');
+});
+
+
+
+
+
+
