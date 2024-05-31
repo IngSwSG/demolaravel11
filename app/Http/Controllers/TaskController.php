@@ -8,26 +8,19 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    function index(Request $request)
+    public function index(Request $request)
     {
         $search = $request->input('search');
         $user_id = $request->input('user_id');
 
-        if ($search) {
-            $tasks = Task::with('user')
-                ->when($user_id, function ($query, $user_id) {
-                    return $query->where('user_id', $user_id);
-                })
-                ->where('name', 'like', "%$search%")
-                ->get();
-        } else {
-            $tasks = Task::with('user')
-                ->when($user_id, function ($query, $user_id) {
-                    return $query->where('user_id', $user_id);
-                })
-                ->get();
-        }
-
+        $tasks = Task::with('user')
+            ->when($user_id, function ($query, $user_id) {
+                return $query->where('user_id', $user_id);
+            })
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', "%$search%");
+            })
+            ->get();
 
         return view('tasks.index', [
             'tasks' => $tasks,
@@ -36,28 +29,25 @@ class TaskController extends Controller
         ]);
     }
 
-    function show(Task $task)
+    public function show(Task $task)
     {
-
         return view('tasks.show', [
             'task' => $task
         ]);
     }
 
-    function create()
+    public function create()
     {
-
         return view('tasks.create', [
             'users' => User::all()
         ]);
     }
 
-    function store(Request $request)
+    public function store(Request $request)
     {
-
         $data = $request->validate([
             'name' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required|exists:users,id'
         ]);
 
         Task::create($data);
@@ -65,21 +55,19 @@ class TaskController extends Controller
         return redirect()->route('tasks.index');
     }
 
-    function edit(Task $task)
+    public function edit(Task $task)
     {
-
         return view('tasks.edit', [
             'task' => $task,
             'users' => User::all()
         ]);
     }
 
-    function update(Task $task, Request $request)
+    public function update(Request $request, Task $task)
     {
-
         $data = $request->validate([
             'name' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required|exists:users,id'
         ]);
 
         $task->update($data);
@@ -87,7 +75,7 @@ class TaskController extends Controller
         return redirect()->route('tasks.index');
     }
 
-    function destroy(Task $task)
+    public function destroy(Task $task)
     {
         $task->delete();
 

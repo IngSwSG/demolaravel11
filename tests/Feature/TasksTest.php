@@ -71,3 +71,31 @@ it('actualizar el usuario de una tarea', function () {
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
  
  });
+
+ it('Verifica Filtro Por Usuario', function () {
+    $this->withoutExceptionHandling();
+
+   
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    $task1 = Task::factory()->create(['user_id' => $user1->id]);
+    $task2 = Task::factory()->create(['user_id' => $user2->id]);
+    $task3 = Task::factory()->create(['user_id' => $user2->id]);
+
+ 
+    $response = $this->get(route('tasks.index', ['user_id' => $user1->id]));
+
+    
+    $response->assertStatus(200);
+
+    $response->assertViewHas('tasks', function ($tasks) use ($user1) {
+        foreach ($tasks as $task) {
+            if ($task->user_id !== $user1->id) {
+                return false;
+            }
+        }
+        return $tasks->count() === 1;
+    });
+});
+
