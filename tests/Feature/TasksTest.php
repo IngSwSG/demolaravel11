@@ -71,3 +71,17 @@ it('actualizar el usuario de una tarea', function () {
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
  
  });
+
+ it('marca una tarea como completada', function () {
+    $task = Task::factory()->create([
+        'completed' => false
+    ]);
+
+    $response = $this->patch(route('tasks.complete', $task->id));
+
+    $response->assertRedirect();
+    $this->assertDatabaseHas('tasks', [
+        'id' => $task->id,
+        'completed' => true,
+    ]);
+});
