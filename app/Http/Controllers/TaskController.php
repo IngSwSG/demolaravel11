@@ -93,4 +93,11 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index');
     }
+
+    function markComplete(Task $task)
+    {
+        $task->update(['estado' => 'completada']);
+
+        return redirect()->route('tasks.index')->with('status', 'Tarea marcada como completada');
+    }
 }
