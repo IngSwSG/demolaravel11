@@ -15,3 +15,18 @@
 @foreach ($tasks as $task)
     <li><a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})</li>
 @endforeach
+@foreach ($tasks as $task)
+    <div>
+        <p>{{ $task->name }}</p>
+        <p>Assigned to: {{ $task->user->name }}</p>
+        <form action="{{ route('tasks.complete', $task) }}" method="POST" style="display: inline;">
+            @csrf
+            @method('PATCH')
+            @if (!$task->completed)
+                <button type="submit">Mark as Completed</button>
+            @else
+                <span>Completed</span>
+            @endif
+        </form>
+    </div>
+@endforeach

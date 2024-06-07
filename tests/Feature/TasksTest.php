@@ -91,3 +91,21 @@ it('actualizar el usuario de una tarea', function () {
     $tasks = $response->viewData('tasks');
     expect($tasks->count())->toBe(2);
 });
+it('marca una tarea como completada', function () {
+    $this->withoutExceptionHandling();
+
+    // Crear usuario y tarea
+    $user = User::factory()->create();
+    $task = Task::factory()->create(['user_id' => $user->id, 'completed' => false]);
+
+    expect($task->completed)->toBe(false);
+
+    $response = $this->patch(route('tasks.complete', $task));
+
+    $task->refresh();
+
+   
+    expect($task->completed)->toBe(true);
+
+    $response->assertRedirect('/tasks');
+});
