@@ -93,4 +93,13 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index');
     }
+
+    public function MarcarComoCompleta(Task $task)
+    {
+        // Aquí tu lógica para marcar la tarea como completa...
+    
+        $task->update(['completed' => 1]);
+    
+        return redirect()->route('tasks.index');
+    }
 }

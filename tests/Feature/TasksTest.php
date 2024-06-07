@@ -71,3 +71,37 @@ it('actualizar el usuario de una tarea', function () {
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
  
  });
+ it('marca una tarea como completa', function () {
+    // Crear una tarea
+    $task = Task::factory()->create([
+        'name' => 'Tarea de prueba',
+        'completed' => 0, // Asegúrate de que el valor predeterminado de completed sea 0
+    ]);
+
+    // Verificar que la tarea fue creada con éxito
+    $this->assertDatabaseHas('tasks', [
+        'name' => 'Tarea de prueba',
+        'completed' => 0,
+    ]);
+
+    // Simular la acción de completar la tarea
+$response = $this->patch(route('tasks.complete', ['task' => $task->id]), [
+    'name' => $task->name,
+    'user_id' => $task->user_id,
+    'completed' => 1, // Cambiar el estado de completed a 1 (completo)
+]);
+
+
+    // Verificar que la tarea se actualizó correctamente
+    $response->assertRedirect(route('tasks.index'));
+    $this->assertDatabaseHas('tasks', [
+        'name' => 'Tarea de prueba',
+        'completed' => 1, // Verificar que el estado de completed cambió a 1
+    ]);
+});
+
+
+
+   
+
+

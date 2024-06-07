@@ -12,20 +12,20 @@ class TaskFilterTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Test user filter functionality.
+     * Test_filtro.
      *
      * @return void
      */
     public function test_filtro()
     {
-        // Crear dos usuarios
+        // Creamos dos usuarios
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
 
-        // Crear tareas para cada usuario
+        // Generar tareas para cada usuario
         $task1 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Task for user1']);
         $task2 = Task::factory()->create(['user_id' => $user2->id, 'name' => 'Task for user2']);
-        $task3 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Another task for user1']);
+        $task3 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Otra tarea para el usuario']);
 
         // Hacer una solicitud GET para filtrar tareas por el primer usuario
         $response = $this->get('/tasks?user_id=' . $user1->id);
