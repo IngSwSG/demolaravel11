@@ -93,4 +93,12 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index');
     }
+    public function markAsCompleted($id)
+    {
+        $task = Task::findOrFail($id);
+        $task->completed = true;
+        $task->save();
+
+        return redirect()->back()->with('success', 'Tarea marcada como completada.');
+    }
 }
