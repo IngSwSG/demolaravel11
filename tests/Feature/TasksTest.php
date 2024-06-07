@@ -91,3 +91,18 @@ it('actualizar el usuario de una tarea', function () {
     $response->assertSee('Otra tarea del usuario 1');
     $response->assertDontSee('Tarea del usuario 2');
 });
+
+it('marca una tarea como completada', function () {
+    $this->withoutExceptionHandling();
+
+    $user = User::factory()->create();
+    $task = Task::factory()->create(['user_id' => $user->id, 'completed' => false]);
+
+    $response = $this->actingAs($user)->patch(route('tasks.complete', $task->id));
+
+    $response->assertRedirect(route('tasks.index'));
+    $this->assertDatabaseHas('tasks', [
+        'id' => $task->id,
+        'completed' => true,
+    ]);
+});

@@ -28,7 +28,6 @@ class TaskController extends Controller
                 ->get();
         }
 
-
         return view('tasks.index', [
             'tasks' => $tasks,
             'search' => $search,
@@ -38,7 +37,6 @@ class TaskController extends Controller
 
     function show(Task $task)
     {
-
         return view('tasks.show', [
             'task' => $task
         ]);
@@ -46,7 +44,6 @@ class TaskController extends Controller
 
     function create()
     {
-
         return view('tasks.create', [
             'users' => User::all()
         ]);
@@ -54,7 +51,6 @@ class TaskController extends Controller
 
     function store(Request $request)
     {
-
         $data = $request->validate([
             'name' => 'required',
             'user_id' => 'required'
@@ -67,7 +63,6 @@ class TaskController extends Controller
 
     function edit(Task $task)
     {
-
         return view('tasks.edit', [
             'task' => $task,
             'users' => User::all()
@@ -76,10 +71,10 @@ class TaskController extends Controller
 
     function update(Task $task, Request $request)
     {
-
         $data = $request->validate([
             'name' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'completed' => 'required|boolean'
         ]);
 
         $task->update($data);
@@ -90,6 +85,14 @@ class TaskController extends Controller
     function destroy(Task $task)
     {
         $task->delete();
+
+        return redirect()->route('tasks.index');
+    }
+
+    function markAsCompleted(Task $task)
+    {
+        $task->completed = true;
+        $task->save();
 
         return redirect()->route('tasks.index');
     }

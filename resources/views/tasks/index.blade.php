@@ -1,17 +1,38 @@
-<h1>Tareas</h1>
-<a href="/tasks/create">Crear</a>
-<form action="{{ route('tasks.index') }}">
- 
-    <input type="text" name="search" value="{{ $search }}">
-    <select name="user_id" id="user_id">
-        <option value="">Todos los usuarios</option>
-        @foreach ($users as $user)
-            <option value="{{ $user->id }}" {{ $user->id == request('user_id') ? 'selected' : '' }}>{{ $user->name }}</option>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tareas</title>
+</head>
+<body>
+    <h1>Tareas</h1>
+    <a href="{{ route('tasks.create') }}">Crear</a>
+    <form action="{{ route('tasks.index') }}" method="GET">
+        <input type="text" name="search" value="{{ $search }}">
+        <select name="user_id" id="user_id">
+            <option value="">Todos los usuarios</option>
+            @foreach ($users as $user)
+                <option value="{{ $user->id }}" {{ $user->id == request('user_id') ? 'selected' : '' }}>
+                    {{ $user->name }}
+                </option>
+            @endforeach
+        </select>
+        <button type="submit">Buscar</button>
+    </form>
+    <ul>
+        @foreach ($tasks as $task)
+            <li>
+                <a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})
+                @if (!$task->completed)
+                    <form action="{{ route('tasks.complete', $task->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit">Marcar como completada</button>
+                    </form>
+                @else
+                    <span>Completada</span>
+                @endif
+            </li>
         @endforeach
-    </select>
-    <button type="submit">Buscar</button>
-
-</form>
-@foreach ($tasks as $task)
-    <li><a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})</li>
-@endforeach
+    </ul>
+</body>
+</html>
