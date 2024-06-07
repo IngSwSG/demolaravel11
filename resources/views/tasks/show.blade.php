@@ -5,6 +5,11 @@
     <p>
         <small>Creado por: {{ $task->user->name }}</small>
     </p>
+    @if ($task->completed)
+        <p>Estado: Completada</p>
+    @else
+        <p>Estado: Pendiente</p>
+    @endif
 
     <a href="{{ route('tasks.edit', $task) }}">Editar</a>
     <form action="{{ route('tasks.destroy', $task) }}" method="post">

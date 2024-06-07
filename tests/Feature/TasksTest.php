@@ -94,3 +94,25 @@ it('actualizar el usuario de una tarea', function () {
     $response->assertSee('Tarea del Usuario 1');
     $response->assertDontSee('Tarea del Usuario 2');
 });
+
+/** @test */
+it('it_marks_task_as_completed', function()
+{
+    $this->withoutExceptionHandling();
+
+    $task = Task::factory()->create([
+        'completed' => false,
+        'name' => 'Tarea Incompleta'
+    ]);
+
+    $response = $this->post($task->path() . '/complete');
+
+    $response->assertStatus(302);
+    $response->assertRedirect('/tasks');
+    
+    $this->assertTrue($task->fresh()->completed);
+
+    $response = $this->get('/tasks');
+    $response->assertStatus(200);
+    $response->assertSee('Tarea Incompleta');
+});
