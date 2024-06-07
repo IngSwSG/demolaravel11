@@ -79,7 +79,8 @@ class TaskController extends Controller
 
         $data = $request->validate([
             'name' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'estado' => 'required'
         ]);
 
         $task->update($data);

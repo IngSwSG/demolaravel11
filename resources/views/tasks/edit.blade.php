@@ -27,5 +27,12 @@
             @endforeach
         </select>
     </div>
+    <div>
+        <label for="estado">Estado</label>
+        <select name="estado" id="estado">
+            <option value="0" {{ $task->estado === 0 ? 'selected' : '' }}>Incompleto</option>
+            <option value="1" {{ $task->estado === 1 ? 'selected' : '' }}>Completado</option>
+        </select>
+    </div>
     <button type="submit">Actualizar tarea</button>
 </form>
