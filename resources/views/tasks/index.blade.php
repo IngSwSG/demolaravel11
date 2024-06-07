@@ -12,6 +12,19 @@
     <button type="submit">Buscar</button>
 
 </form>
+<ul>
 @foreach ($tasks as $task)
-    <li><a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})</li>
+    <li>
+        <a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})
+        @if (!$task->completed)
+            <form action="{{ route('tasks.complete', $task) }}" method="POST" style="display: inline;">
+                @csrf
+                @method('PUT')
+                <button type="submit">Marcar como completada</button>
+            </form>
+        @else
+            <span>Completada</span>
+        @endif
+    </li>
 @endforeach
+</ul>

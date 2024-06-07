@@ -95,4 +95,18 @@ it('actualizar el usuario de una tarea', function () {
 
  });
  
- 
+ it('Probar tarea completada', function(){
+    // Arrange
+    $user = User::factory()->create();
+    $task = Task::factory()->create(['user_id' => $user->id, 'completed' => false]);
+
+    // Act
+    $response = $this->put(route('tasks.complete', $task));
+
+    // Assert
+    $response->assertRedirect(route('tasks.index'));
+    $this->assertDatabaseHas('tasks', [
+        'id' => $task->id,
+        'completed' => true,
+    ]);
+ });
