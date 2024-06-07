@@ -1,7 +1,9 @@
 <?php
 
-use App\Models\Task;
 use App\Models\User;
+use App\Models\Task;
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 it('muestra la informacion de una tarea', function () {
     $task = Task::factory()->create([
@@ -98,4 +100,28 @@ it('actualizar el usuario de una tarea', function () {
         return $tasks->count() === 1;
     });
 });
+
+it('marca tarea como completada', function () {
+
+    $this->withoutExceptionHandling();
+
+   
+    $user = User::factory()->create();
+    $task = Task::factory()->create([
+        'user_id' => $user->id,
+        'completed' => false,
+        'name' => 'Comprar tenis nuevas',
+    ]);
+    
+    $response = $this->put(route('tasks.complete', $task));
+
+    $this->assertDatabaseHas('tasks', [
+        'id' => $task->id,
+        'completed' => true,
+    ]);
+});
+
+
+
+ 
 

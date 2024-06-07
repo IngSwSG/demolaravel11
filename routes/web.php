@@ -7,6 +7,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::put('/tasks/{task}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
+
 Route::resource('tasks', TaskController::class);
 Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
 Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');

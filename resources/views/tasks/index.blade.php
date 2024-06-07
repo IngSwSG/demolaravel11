@@ -15,3 +15,33 @@
 @foreach ($tasks as $task)
     <li><a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})</li>
 @endforeach
+
+@foreach ($tasks as $task)
+    <p>{{ $task->name }} - {{ $task->completed ? 'Completed' : 'Pending' }}</p>
+    @if (!$task->completed)
+        <form action="{{ route('tasks.complete', $task) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <button type="submit">Mark as Completed</button>
+        </form>
+    @endif
+@endforeach
+
+<h1>Tasks</h1>
+    @if(session('status'))
+        <p style="color:green;">{{ session('status') }}</p>
+    @endif
+    <ul>
+        @foreach ($tasks as $task)
+            <li>
+                {{ $task->name }} - {{ $task->completed ? 'Completed' : 'Pending' }}
+                @if (!$task->completed)
+                    <form action="{{ route('tasks.complete', $task) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit">Mark as Completed</button>
+                    </form>
+                @endif
+            </li>
+        @endforeach
+    </ul>
