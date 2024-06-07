@@ -12,6 +12,12 @@
     <button type="submit">Buscar</button>
 
 </form>
+
 @foreach ($tasks as $task)
-    <li><a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})</li>
+    <li>
+        <a href="{{ $task->path() }}" style="{{ $task->completed ? 'text-decoration: line-through; color: #999;' : '' }}">
+            {{ $task->completed ? 'Completada' : 'Incompleta' }} - {{ $task->name }}
+        </a>
+        ({{ $task->user->name }})
+    </li>
 @endforeach

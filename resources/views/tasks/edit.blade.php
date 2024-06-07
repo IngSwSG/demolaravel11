@@ -27,5 +27,11 @@
             @endforeach
         </select>
     </div>
+    <div>
+        <label for="completed">Completado</label>
+        <input type="hidden" name="completed" value="0"> <!-- Para asegurar que siempre se envíe un valor, incluso si el checkbox no está marcado -->
+        <input type="checkbox" name="completed" id="completed" value="1" {{ $task->completed ? 'checked' : '' }}>
+        <span>The completed field must be true or false.</span> <!-- Agregamos un mensaje de validación -->
+    </div>
     <button type="submit">Actualizar tarea</button>
 </form>

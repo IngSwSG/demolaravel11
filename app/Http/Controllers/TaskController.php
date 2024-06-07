@@ -57,7 +57,8 @@ class TaskController extends Controller
 
         $data = $request->validate([
             'name' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'completed' => 'boolean',
         ]);
 
         Task::create($data);
@@ -79,7 +80,8 @@ class TaskController extends Controller
 
         $data = $request->validate([
             'name' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'completed' => 'boolean',
         ]);
 
         $task->update($data);

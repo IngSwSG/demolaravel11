@@ -71,3 +71,25 @@ it('actualizar el usuario de una tarea', function () {
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
  
  });
+
+
+ it('completar una tarea', function () {
+    $this->withoutExceptionHandling();
+    
+    $user = User::factory()->create();
+    $task = Task::factory()->create([
+        'name' => 'Tarea por completar',
+        'user_id' => $user->id,
+        'completed' => false, // Establecer el estado inicial como no completado
+    ]);
+
+    $data = [
+        'name' => $task->name,
+        'user_id' => $task->user_id,
+        'completed' => true, // Marcar la tarea como completada
+    ];
+
+    $response = $this->put($task->path(), $data);
+
+    expect((bool) $task->fresh()->completed)->toBe(true);
+});
