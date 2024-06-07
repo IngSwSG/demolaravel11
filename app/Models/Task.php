@@ -20,4 +20,13 @@ class Task extends Model
     public function path(){
         return '/tasks/'. $this->id;
     }
+
+    public function casts(): array
+    {
+        return [
+            'completed' => 'boolean',
+            
+        ];
+
+    }
 }
