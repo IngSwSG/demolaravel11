@@ -59,12 +59,14 @@ it('filtra las tareas por user_id', function ()
 
 it('actualizar una tarea', function () {
    $task = Task::factory()->create([
-       'name' => 'Tarea vieja'
+       'name' => 'Tarea vieja',
+       'estado' => 0
    ]);
    
    $data = [
        'name' => 'Tarea actualizada',
-       'user_id' => $task->user_id
+       'user_id' => $task->user_id,
+       'estado' => 0
    ];
 
    $response = $this->put($task->path(), $data);
@@ -73,16 +75,36 @@ it('actualizar una tarea', function () {
 
 });
 
+it('actualizar estado de la tarea', function () {
+    $task = Task::factory()->create([
+        'estado' => 0
+    ]);
+    
+    $data = [
+        'name' => 'Tarea actualizada',
+        'user_id' => $task->user_id,
+        'estado' => 1
+    ];
+ 
+    $response = $this->put($task->path(), $data);
+ 
+    expect($task->fresh()->estado)->toBe(1);
+ 
+ });
+
+
 it('actualizar el usuario de una tarea', function () {
     $this->withoutExceptionHandling();
 
     $task = Task::factory()->create([
-        'name' => 'Tarea vieja'
+        'name' => 'Tarea vieja',
+        'estado' => 0
     ]);
     $otroUsuario = User::factory()->create();
     $data = [
         'name' => 'Tarea vieja',
-        'user_id' => $otroUsuario->id
+        'user_id' => $otroUsuario->id,
+        'estado'=> 0
     ];
  
     $response = $this->put($task->path(), $data);
