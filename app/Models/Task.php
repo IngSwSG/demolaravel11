@@ -11,13 +11,18 @@ class Task extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'Complete' => 'boolean', // Agrega esta línea
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function path(){
-        return '/tasks/'. $this->id;
+    public function path()
+    {
+        return '/tasks/'.$this->id;
+
     }
 }

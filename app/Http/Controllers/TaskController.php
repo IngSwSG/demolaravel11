@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    function index(Request $request)
+    public function index(Request $request)
     {
         $search = $request->input('search');
         $user_id = $request->input('user_id');
@@ -28,36 +28,35 @@ class TaskController extends Controller
                 ->get();
         }
 
-
         return view('tasks.index', [
             'tasks' => $tasks,
             'search' => $search,
-            'users' => User::all()
+            'users' => User::all(),
         ]);
     }
 
-    function show(Task $task)
+    public function show(Task $task)
     {
 
         return view('tasks.show', [
-            'task' => $task
+            'task' => $task,
         ]);
     }
 
-    function create()
+    public function create()
     {
 
         return view('tasks.create', [
-            'users' => User::all()
+            'users' => User::all(),
         ]);
     }
 
-    function store(Request $request)
+    public function store(Request $request)
     {
 
         $data = $request->validate([
             'name' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
         ]);
 
         Task::create($data);
@@ -65,21 +64,21 @@ class TaskController extends Controller
         return redirect()->route('tasks.index');
     }
 
-    function edit(Task $task)
+    public function edit(Task $task)
     {
 
         return view('tasks.edit', [
             'task' => $task,
-            'users' => User::all()
+            'users' => User::all(),
         ]);
     }
 
-    function update(Task $task, Request $request)
+    public function update(Task $task, Request $request)
     {
 
         $data = $request->validate([
             'name' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
         ]);
 
         $task->update($data);
@@ -87,9 +86,17 @@ class TaskController extends Controller
         return redirect()->route('tasks.index');
     }
 
-    function destroy(Task $task)
+    public function destroy(Task $task)
     {
         $task->delete();
+
+        return redirect()->route('tasks.index');
+    }
+
+    public function complete(Task $task)
+    {
+        $task->Complete = true;
+        $task->save();
 
         return redirect()->route('tasks.index');
     }

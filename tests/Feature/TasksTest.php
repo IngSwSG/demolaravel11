@@ -97,3 +97,22 @@ it('filtra las tareas por usuario', function () {
     $response->assertSee('Tarea de usuario 1');
     $response->assertDontSee('Tarea de usuario 2');
 });
+
+it('marca una tarea como completada', function () {
+    // Crear un usuario y una tarea asignada a ese usuario
+    $user = User::factory()->create();
+    $task = Task::factory()->create([
+        'name' => 'Tarea incompleta',
+        'user_id' => $user->id,
+        'Complete' => false, // Usa 'Complete'
+    ]);
+
+    // Realizar la solicitud para marcar la tarea como completada
+    $response = $this->post(route('tasks.complete', $task->id));
+
+    // Verificar que la tarea ha sido marcada como completada
+    expect($task->fresh()->Complete)->toBeTrue(); // Usa 'Complete'
+
+    // Verificar que la respuesta redirige al índice de tareas
+    $response->assertRedirect('/tasks');
+});
