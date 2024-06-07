@@ -6,6 +6,8 @@ use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+
+
 class TaskController extends Controller
 {
     function index(Request $request)
@@ -90,6 +92,13 @@ class TaskController extends Controller
     function destroy(Task $task)
     {
         $task->delete();
+
+        return redirect()->route('tasks.index');
+    }
+
+    function complete(Task $task)
+    {
+        $task->update(['completed' => true]);
 
         return redirect()->route('tasks.index');
     }
