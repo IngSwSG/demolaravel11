@@ -28,6 +28,21 @@ class TaskController extends Controller
                 ->get();
         }
 
+        if ($search) {
+            $tasks = Task::with('user')
+                ->when($user_id, function ($query, $user_id) {
+                    return $query->where('user_id', $user_id);
+                })
+                ->where('name', 'like', "%$search%")
+                ->get();
+        } else {
+            $tasks = Task::with('user')
+                ->when($user_id, function ($query, $user_id) {
+                    return $query->where('user_id', $user_id);
+                })
+                ->get();
+        }
+
 
         return view('tasks.index', [
             'tasks' => $tasks,
@@ -91,6 +106,12 @@ class TaskController extends Controller
     {
         $task->delete();
 
+        return redirect()->route('tasks.index');
+    }
+    
+    function complete(Request $request, Task $task)
+    {
+        $task->update(['completed' => true]);
         return redirect()->route('tasks.index');
     }
 }
