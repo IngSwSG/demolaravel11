@@ -9,8 +9,11 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
-
+    protected $fillable = [
+        'name',
+        'user_id',
+        'completed',
+    ];
 
     public function user()
     {
@@ -19,5 +22,14 @@ class Task extends Model
 
     public function path(){
         return '/tasks/'. $this->id;
+    }
+
+    public function complete()
+    {
+        $this->update(['completed' => true]);
+    }
+    public function incomplete()
+    {
+        $this->update(['completed' => false]);
     }
 }

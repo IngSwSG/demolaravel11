@@ -96,3 +96,17 @@ it('filtra las tareas por usuario', function () {
         return $tasks->contains($task1) && $tasks->contains($task2) && !$tasks->contains($task3);
     });
 });
+
+//Nueva prueba Actiidad 9
+
+it('marca una tarea como completada', function () {
+    // Arrange: Crear
+    $task = Task::factory()->create();
+
+    // Act: Llamar unidad
+    $response = $this->get(route('tasks.complete', $task));
+
+    // Asserts: Verificar
+    $response->assertRedirect(route('tasks.index'));
+    $this->assertTrue($task->fresh()->completed);
+});
