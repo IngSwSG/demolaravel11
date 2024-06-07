@@ -98,6 +98,30 @@ it('filtra las tareas por usuario', function () {
     $response->assertDontSee('Tarea del usuario 2');
 });
 
+it('marca una tarea como completada', function () {
+    $this->withoutExceptionHandling();
+
+    $user = User::factory()->create();
+    $task = Task::factory()->create([
+        'name' => 'Tarea incompleta',
+        'user_id' => $user->id,
+        'completed' => false
+    ]);
+
+    $response = $this->patch(route('tasks.complete', $task));
+
+    $this->assertTrue((bool) $task->fresh()->completed);
+
+    $response->assertRedirect('/tasks');
+});
+
+
+
+
+
+
+
+
 
 
 

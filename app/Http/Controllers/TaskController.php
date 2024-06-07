@@ -93,4 +93,9 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index');
     }
+    public function complete(Task $task)
+    {
+        $task->update(['completed' => true]);
+        return redirect()->route('tasks.index');
+    }
 }
