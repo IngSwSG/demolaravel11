@@ -28,7 +28,6 @@ class TaskController extends Controller
                 ->get();
         }
 
-
         return view('tasks.index', [
             'tasks' => $tasks,
             'search' => $search,
@@ -38,7 +37,6 @@ class TaskController extends Controller
 
     function show(Task $task)
     {
-
         return view('tasks.show', [
             'task' => $task
         ]);
@@ -46,7 +44,6 @@ class TaskController extends Controller
 
     function create()
     {
-
         return view('tasks.create', [
             'users' => User::all()
         ]);
@@ -54,7 +51,6 @@ class TaskController extends Controller
 
     function store(Request $request)
     {
-
         $data = $request->validate([
             'name' => 'required',
             'user_id' => 'required'
@@ -67,7 +63,6 @@ class TaskController extends Controller
 
     function edit(Task $task)
     {
-
         return view('tasks.edit', [
             'task' => $task,
             'users' => User::all()
@@ -76,7 +71,6 @@ class TaskController extends Controller
 
     function update(Task $task, Request $request)
     {
-
         $data = $request->validate([
             'name' => 'required',
             'user_id' => 'required'
@@ -93,4 +87,16 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index');
     }
+
+    public function markAsCompleted($id)
+    {
+        $task = Task::findOrFail($id);
+        
+        $task->completed = !$task->completed;
+        $task->save();
+    
+        return redirect()->back()->with('status', 'Estado de la tarea actualizado!');
+    }
+    
 }
+
