@@ -89,4 +89,16 @@ it('actualizar el usuario de una tarea', function () {
     $response->assertDontSee('Tarea de Usuario 2');
 });
 
+it('marca una tarea como completada', function () {
+    $task = Task::factory()->create([
+        'name' => 'Tarea por completar',
+        'completed' => false,
+    ]);
+
+    $response = $this->patch(route('tasks.complete', $task));
+
+    $response->assertRedirect('/tasks');
+    expect($task->fresh()->completed)->toBe(1);
+});
+
 
