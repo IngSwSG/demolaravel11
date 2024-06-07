@@ -33,10 +33,13 @@ class DatabaseSeeder extends Seeder
 
         Task::factory(3)->create([
             'user_id' => $user->id,
+            'completed' => false,
+            
         ]);
 
         Task::factory(2)->create([
             'user_id' => $user2->id,
+            'completed' => false,
         ]);
 
         Schema::enableForeignKeyConstraints();

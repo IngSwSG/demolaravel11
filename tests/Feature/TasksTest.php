@@ -103,4 +103,28 @@ it('actualizar el usuario de una tarea', function () {
  
  });
 
+ /******Actividad 9*********/
+
+ it('marca una tarea como completada', function () {
+
+    $this->withoutExceptionHandling();
+
+    // Arrange
+    $user = User::factory()->create();
+    $task = Task::factory()->create([
+        'user_id' => $user->id,
+        'completed' => false,
+        'name' => 'Ver Avengers EndGame',
+    ]);
+
+    // Act
+    $response = $this->put(route('tasks.complete', $task));
+
+
+    // Assert
+    $this->assertDatabaseHas('tasks', [
+        'id' => $task->id,
+        'completed' => true,
+    ]);
+});
   
