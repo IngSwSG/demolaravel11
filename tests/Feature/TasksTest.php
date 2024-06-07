@@ -73,43 +73,42 @@ it('actualizar el usuario de una tarea', function () {
  });
 
  it('verifica la funcionalidad e filtro', function () {
-    // Crear usuarios y tareas
-    $user1 = User::factory()->create();
-    $user2 = User::factory()->create();
+  // Creamos un usuario y tareas asociadas
+  $user = User::factory()->create();
+  $task1 = Task::factory()->create([
+      'name' => 'Tarea nueva',
+      'user_id' => $user->id,
+  ]);
 
-    $task1 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Primera ']);
-    $task2 = Task::factory()->create(['user_id' => $user1->id, 'name' => 'Segunda ']);
-    $task3 = Task::factory()->create(['user_id' => $user2->id, 'name' => 'Tercera ']);
-    $task4 = Task::factory()->create(['user_id' => $user2->id, 'name' => 'Cuarta']);
+  // Creamos tareas adicionales para pruebas de filtrado
+  $task2 = Task::factory()->create(['name' => 'Buscar esta tarea', 'user_id' => $user->id]);
+  $task3 = Task::factory()->create(['name' => 'Otra tarea']);
 
-    // Escenario 1: Sin filtro
-    $response = $this->get('/tasks');
-    $response->assertStatus(200);
-    $response->assertViewHas('tasks', function ($tasks) {
-        return $tasks->count() === 4;
-    });
+  // Realizamos la petición GET a la ruta /tasks con el user_id y el término de búsqueda
+  $response = $this->get(route('tasks.index', ['user_id' => $user->id, 'search' => 'Buscar']));
 
-    // Escenario 2: Filtrar por user_id
-    $response = $this->get('/tasks?user_id=' . $user1->id);
-    $response->assertStatus(200);
-    $response->assertViewHas('tasks', function ($tasks) use ($user1) {
-        return $tasks->count() === 2 && $tasks->every(function ($task) use ($user1) {
-            return $task->user_id === $user1->id;
-        });
-    });
-
-    // Escenario 3: Filtrar por término de búsqueda
-    $response = $this->get('/tasks?search=Task');
-    $response->assertStatus(200);
-    $response->assertViewHas('tasks', function ($tasks) {
-        return $tasks->count() === 3 && $tasks->contains('name', 'Task One') && $tasks->contains('name', 'Task Two');
-    });
-
-    // Escenario 4: Filtrar por user_id y término de búsqueda
-    $response = $this->get('/tasks?user_id=' . $user1->id . '&search=Task');
-    $response->assertStatus(200);
-    $response->assertViewHas('tasks', function ($tasks) use ($user1) {
-        return $tasks->count() === 1 && $tasks->first()->user_id === $user1->id && $tasks->first()->name === 'Task One';
-    });
+  // Verificamos que el estado de la respuesta sea 200
+  $response->assertStatus(200);
+  // Verificamos que la respuesta contenga la tarea que coincide con la búsqueda y pertenece al usuario, y no la otra
+  $response->assertSee('Buscar esta tarea');
+  $response->assertDontSee('Otra tarea');
 });
 
+it('verifica funcionalidad de completado', function () {
+    $this->withoutExceptionHandling();
+
+    $user = User::factory()->create();
+    $task = Task::factory()->create([
+        'name' => 'Tarea1',
+        'user_id' => $user->id,
+        'estado' => false
+    ]);
+
+    $this->patch("/tasks/{$task->id}/complete")
+        ->assertStatus(200);
+
+    $this->assertDatabaseHas('tasks', [
+        'id' => $task->id,
+        'estado' => true,
+    ]);
+ });

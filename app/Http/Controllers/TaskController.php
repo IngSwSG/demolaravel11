@@ -87,10 +87,12 @@ class TaskController extends Controller
         return redirect()->route('tasks.index');
     }
 
-    function destroy(Task $task)
+    function complete($id)
     {
-        $task->delete();
+        $task = Task::findOrFail($id);
+        $task->estado = true;
+        $task->save();
 
-        return redirect()->route('tasks.index');
+        return response()->json(['message' => 'Tarea marcada como completada'], 200);
     }
 }
