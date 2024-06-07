@@ -46,6 +46,7 @@ it('actualizar una tarea', function () {
    $data = [
        'name' => 'Tarea actualizada',
        'user_id' => $task->user_id
+       
    ];
 
    $response = $this->put($task->path(), $data);
@@ -88,3 +89,30 @@ it('actualizar el usuario de una tarea', function () {
 
   
 });
+it('verifica que el atributo isCompleted de la tarea se establece en true al actualizar', function () {
+    // Arrange
+    $task = Task::factory()->create([
+        'name' => 'Tarea original',
+        'user_id' => User::factory()->create()->id,
+        'isCompleted' => false,
+    ]);
+
+    $updatedData = [
+        'name' => 'Tarea actualizada',
+        'user_id' => $task->user_id,
+        'isCompleted' => true,
+    ];
+
+    // Act
+    $response = $this->put(route('tasks.update', $task), $updatedData);
+
+    // Assert
+    $response->assertRedirect(route('tasks.index'));
+
+    $this->assertDatabaseHas('tasks', [
+        'id' => $task->id,
+        'name' => 'Tarea actualizada',
+        'isCompleted' => true,
+    ]);
+});
+

@@ -27,5 +27,13 @@
             @endforeach
         </select>
     </div>
+    <div>
+        <p>completada?: {{ $task->isCompleted ? 'True' : 'False' }}</p>
+
+        <input type="hidden" name="isCompleted" value="0"> 
+
+        <input type="checkbox" name="isCompleted" id="isCompleted" value="1"
+            {{ $task->isCompleted ? 'checked' : '' }}> 
+    </div>
     <button type="submit">Actualizar tarea</button>
 </form>

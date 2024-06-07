@@ -78,12 +78,16 @@ class TaskController extends Controller
     {
 
         $data = $request->validate([
-            'name' => 'required',
-            'user_id' => 'required'
+            'name' => 'required|string|max:255',
+            'user_id' => 'required|exists:users,id',
         ]);
-
+    
         $task->update($data);
-
+    
+        // Asegúrate de asignar y guardar `isCompleted` por separado
+        $task->isCompleted = $request->input('isCompleted', false);
+        $task->save();
+    
         return redirect()->route('tasks.index');
     }
 
@@ -93,4 +97,5 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index');
     }
+    
 }
