@@ -36,6 +36,11 @@ class TaskController extends Controller
         ]);
     }
 
+    public function complete(Task $task)
+    {
+    $task->markAsCompleted();
+    return response()->json(['message' => 'Tarea completada con éxito']);
+    }
     function show(Task $task)
     {
 

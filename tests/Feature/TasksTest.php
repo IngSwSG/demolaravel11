@@ -82,3 +82,27 @@ it('filtra tareas por usuario', function () {
     $responseUser2->assertSee('Tarea');
 });
 
+it('marca una tarea como completada', function () {
+    $this->withoutExceptionHandling();
+
+    // Crear una tarea no completada
+    $task = Task::factory()->create([
+        'name' => 'Tarea incompleta',
+        'completed' => false
+    ]);
+
+    // Enviar petición para completar la tarea
+    $response = $this->post('/tasks/' . $task->id . '/complete');
+
+    // Recargar la tarea para obtener los valores actualizados
+    $task = $task->fresh();
+
+    // Verificar que la respuesta tenga un estado HTTP 200
+    $response->assertStatus(200);
+
+    // Asegurarse de que la tarea esté marcada como completada
+    expect($task->completed)->toBe(true);
+});
+
+
+
