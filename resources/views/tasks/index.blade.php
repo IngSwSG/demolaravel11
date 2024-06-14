@@ -1,5 +1,5 @@
-<h1>Tareas</h1>
-<a href="/tasks/create">Crear</a>
+<h1 style="color:red;">Tareas</h1>
+<a href="/tasks/create" style="color:indigo;">Crear</a>
 <form action="{{ route('tasks.index') }}">
  
     <input type="text" name="search" value="{{ $search }}">
