@@ -10,16 +10,24 @@ class Team extends Model
 {
     use HasFactory;
 
-    public function add($users)
+   public function add($users)
     {
-
-        $this->guardAgainstTooManyMembers();
-
         if ($users instanceof User) {
-            return $this->users()->save($users);
+            $users = collect([$users]);
         }
-
-        $this->users()->saveMany($users);
+    
+        $currentCount = $this->users()->count();
+        $additionalCount = $users->count();
+    
+        // Verificar si agregar todos los usuarios excede el tamaño máximo
+        if ($currentCount + $additionalCount > $this->size) {
+            throw new Exception('El equipo ha alcanzado su tamaño máximo.');
+        }
+    
+        // Iterar sobre cada usuario y guardar uno por uno
+        foreach ($users as $user) {
+            $this->users()->save($user);
+        }
     }
 
     public function users()
