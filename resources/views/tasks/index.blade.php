@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,6 +33,17 @@
                     <span>Completada</span>
                 @endif
             </li>
+=======
+<h1 style="color:red;">Tareas</h1>
+<a href="/tasks/create" style="color:indigo;">Crear</a>
+<form action="{{ route('tasks.index') }}">
+ 
+    <input type="text" name="search" value="{{ $search }}">
+    <select name="user_id" id="user_id">
+        <option value="">Todos los usuarios</option>
+        @foreach ($users as $user)
+            <option value="{{ $user->id }}" {{ $user->id == request('user_id') ? 'selected' : '' }}>{{ $user->name }}</option>
+>>>>>>> 0d39ade7ef98457ae8d67e5ba7ddd5fe67c0d075
         @endforeach
     </ul>
 </body>
