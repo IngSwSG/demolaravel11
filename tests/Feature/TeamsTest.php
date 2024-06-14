@@ -18,16 +18,15 @@ it('un equipo puede tener un tamaño maximo', function(){
     $team = Team::factory()->create(['size' => 2]);
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
-    
+    $user3 = User::factory()->create();
+
     $team->add($user1);
     $team->add($user2);
 
-    expect($team->users)->count()->toBe(2);
-
     $this->expectException(Exception::class);
-    $user3 = User::factory()->create();
     $team->add($user3);
 
+    expect($team->users)->count()->toBe(2);
 
 });
 
