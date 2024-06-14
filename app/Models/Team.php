@@ -11,26 +11,25 @@ class Team extends Model
     use HasFactory;
 
     public function add($users)
-    {
-
-        $this->guardAgainstTooManyMembers();
-
-        if ($users instanceof User) {
-            return $this->users()->save($users);
-        }
-
-        $this->users()->saveMany($users);
+{
+    if ($users instanceof User) {
+        $this->guardAgainstTooManyMembers(1);
+        return $this->users()->save($users);
     }
+
+    $this->guardAgainstTooManyMembers($users->count());
+    $this->users()->saveMany($users);
+}
 
     public function users()
     {
         return $this->hasMany(User::class);
     }
 
-    protected function guardAgainstTooManyMembers()
-    {
-        if ($this->users()->count() >= $this->size) {
-            throw new Exception();
-        }
+    protected function guardAgainstTooManyMembers($newUsersCount = 1)
+{
+    if ($this->users()->count() + $newUsersCount > $this->size) {
+        throw new Exception();
     }
+}
 }
