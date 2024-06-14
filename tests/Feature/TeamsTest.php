@@ -96,3 +96,4 @@ it('prueba de regresion teams', function() {
     // Verifica que solo se agregaron 3 usuarios
     expect($team->users()->count())->toBe(3);
 });
+//Fin prueba
