@@ -91,7 +91,6 @@ $response = $this->patch(route('tasks.complete', ['task' => $task->id]), [
     'completed' => 1, // Cambiar el estado de completed a 1 (completo)
 ]);
 
-
     // Verificar que la tarea se actualizó correctamente
     $response->assertRedirect(route('tasks.index'));
     $this->assertDatabaseHas('tasks', [

@@ -31,12 +31,27 @@ it('un equipo puede tener un tamaño maximo', function(){
 
 });
 
-it('un equipo puede agregar multiples usuarios a la vez', function(){
+it('un equipo puede agregar múltiples usuarios a la vez', function(){
     $team = Team::factory()->create(['size' => 3]);
     $users = User::factory(3)->create();
 
     $team->add($users);
 
-    expect($team->users)->count()->toBe(3);
+    // Refrescar el equipo para obtener la lista actualizada de usuarios
+    $team->refresh();
+
+    expect($team->users)->toHaveCount(3);
+});
+
+
+it('prueba de lanzar excepcion', function(){
+
+    $team = Team::factory()->create(['size' => 3]);
+    $users = User::factory(4)->create(); // Intentar agregar 4 usuarios a un equipo con tamaño 3
+
+    $this->expectException(Exception::class);
+    $this->expectExceptionMessage('Limite excedido.');
+
+    $team->add($users);
 });
 

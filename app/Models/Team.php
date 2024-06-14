@@ -12,16 +12,18 @@ class Team extends Model
 
     public function add($users)
     {
-
-        $this->guardAgainstTooManyMembers();
-
-        if ($users instanceof User) {
+        // Verificar si $users es una colección o un array
+        if ($users instanceof \Illuminate\Support\Collection || is_array($users)) {
+            foreach ($users as $user) {
+                $this->guardAgainstTooManyMembers();
+                $this->users()->save($user);
+            }
+        } else {
+            // Verificar un solo usuario
+            $this->guardAgainstTooManyMembers();
             return $this->users()->save($users);
         }
-
-        $this->users()->saveMany($users);
     }
-
     public function users()
     {
         return $this->hasMany(User::class);
@@ -30,7 +32,7 @@ class Team extends Model
     protected function guardAgainstTooManyMembers()
     {
         if ($this->users()->count() >= $this->size) {
-            throw new Exception();
+            throw new Exception('Limite excedido.');
         }
     }
 }
