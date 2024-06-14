@@ -30,13 +30,18 @@ it('un equipo puede tener un tamaño maximo', function(){
 
 
 });
-
+//Se corrigió para que verifique id 
 it('un equipo puede agregar multiples usuarios a la vez', function(){
     $team = Team::factory()->create(['size' => 3]);
     $users = User::factory(3)->create();
 
     $team->add($users);
 
-    expect($team->users)->count()->toBe(3);
+    expect($team->users()->count())->toBe(3);
+
+    foreach ($users as $user) {
+        expect($team->users->pluck('id'))->toContain($user->id);
+    }
 });
+
 

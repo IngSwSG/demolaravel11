@@ -22,6 +22,7 @@ class Team extends Model
         $this->users()->saveMany($users);
     }
 
+    //Se agregó nuevo
     public function users()
     {
         return $this->hasMany(User::class);
@@ -30,7 +31,7 @@ class Team extends Model
     protected function guardAgainstTooManyMembers()
     {
         if ($this->users()->count() >= $this->size) {
-            throw new Exception();
+            throw new Exception('Too many members');
         }
     }
 }
