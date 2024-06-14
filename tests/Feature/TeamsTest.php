@@ -37,6 +37,14 @@ it('un equipo puede agregar multiples usuarios a la vez', function(){
 
     $team->add($users);
 
-    expect($team->users)->count()->toBe(3);
+    // Verificar que el número de usuarios es 3
+    expect($team->users()->count())->toBe(3);
+
+    // Verificar que los usuarios añadidos son los esperados comparando IDs
+    foreach ($users as $user) {
+        expect($team->users->pluck('id'))->toContain($user->id);
+    }
 });
+
+
 
