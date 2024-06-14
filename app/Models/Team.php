@@ -13,13 +13,18 @@ class Team extends Model
     public function add($users)
     {
 
-        $this->guardAgainstTooManyMembers();
+        $currentSize = $this->users()->count();
+        $additionalUsers = is_array($users) ? count($users) : 1;
+        $newSize = $currentSize + $additionalUsers;
 
-        if ($users instanceof User) {
-            return $this->users()->save($users);
+        if ($newSize > $this->size) {
+            throw new Exception("El equipo no puede tener más de {$this->size} usuarios.");
         }
 
-        $this->users()->saveMany($users);
+        if (is_array($users)) {
+            $this->users()->attach($users);
+        } else {
+            $this->users()->attach($users);}
     }
 
     public function users()
@@ -33,4 +38,6 @@ class Team extends Model
             throw new Exception();
         }
     }
+
+    
 }
