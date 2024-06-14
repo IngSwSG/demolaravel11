@@ -1,6 +1,7 @@
-<h1>Tareas</h1>
-<a href="/tasks/create">Crear</a>
-<form action="{{ route('tasks.index') }}" method="GET">
+<h1 style="color:red;">Tareas</h1>
+<a href="/tasks/create" style="color:indigo;">Crear</a>
+<form action="{{ route('tasks.index') }}">
+ 
     <input type="text" name="search" value="{{ $search }}">
     <select name="user_id" id="user_id">
         <option value="">Todos los usuarios</option>
