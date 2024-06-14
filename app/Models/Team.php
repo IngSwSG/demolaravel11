@@ -10,10 +10,12 @@ class Team extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['size']; 
+
     public function add($users)
     {
-
-        $this->guardAgainstTooManyMembers();
+      
+        $this->guardAgainstTooManyMembers($users);
 
         if ($users instanceof User) {
             return $this->users()->save($users);
@@ -27,10 +29,13 @@ class Team extends Model
         return $this->hasMany(User::class);
     }
 
-    protected function guardAgainstTooManyMembers()
+
+    protected function guardAgainstTooManyMembers($users)
     {
-        if ($this->users()->count() >= $this->size) {
-            throw new Exception();
+        $newMembersCount = ($users instanceof User) ? 1 : count($users);
+
+        if ($this->users()->count() + $newMembersCount > $this->size) {
+            throw new Exception("No puedes agregar más usuarios al equipo, se ha alcanzado el tamaño máximo.");
         }
     }
 }
