@@ -40,3 +40,23 @@ it('un equipo puede agregar multiples usuarios a la vez', function(){
     expect($team->users)->count()->toBe(3);
 });
 
+it('un equipo no puede agregar más usuarios de los permitidos', function(){
+    $team = Team::factory()->create(['size' => 3]);
+    $users = User::factory(3)->create();
+
+    $team->add($users);
+
+    expect($team->users)->count()->toBe(3);
+
+    $extraUsers = User::factory(2)->create();
+
+    $exceptionThrown = false;
+    try {
+        $team->add($extraUsers);
+    } catch (Exception $e) {
+        $exceptionThrown = true;
+        expect($e->getMessage())->toBe("Team size exceeded");
+    }
+
+    expect($exceptionThrown)->toBeTrue();
+});
