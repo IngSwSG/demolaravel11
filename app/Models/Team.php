@@ -30,7 +30,8 @@ class Team extends Model
     protected function guardAgainstTooManyMembers()
     {
         if ($this->users()->count() >= $this->size) {
-            throw new Exception();
+            throw new \RuntimeException('Too many members.');
         }
     }
+    
 }
