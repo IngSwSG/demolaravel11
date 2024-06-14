@@ -21,6 +21,7 @@ it('un equipo puede tener un tamaño maximo', function(){
     
     $team->add($user1);
     $team->add($user2);
+    
 
     expect($team->users)->count()->toBe(2);
 
@@ -37,6 +38,24 @@ it('un equipo puede agregar multiples usuarios a la vez', function(){
 
     $team->add($users);
 
-    expect($team->users)->count()->toBe(3);
+    $team->load('users');
+
+    expect($team->users)->toHaveCount(3);
+    expect($team->users()->count())->toBeLessThanOrEqual($team->size);
 });
 
+
+it('lanza una excepción si se excede el tamaño del equipo', function () {
+    $team = Team::factory()->create(['size' => 2]);
+    $users = User::factory(3)->create();
+
+    try {
+        $team->add($users);
+    } catch (Exception $e) {
+        $this->assertInstanceOf(Exception::class, $e);
+        $this->assertEquals('El equipo ya tiene el número máximo de miembros.', $e->getMessage());
+        return;
+    }
+
+    $this->fail('Se esperaba que se lanzara una excepción cuando se excede el tamaño del equipo.');
+});
