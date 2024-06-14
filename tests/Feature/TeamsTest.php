@@ -31,12 +31,36 @@ it('un equipo puede tener un tamaño maximo', function(){
 
 });
 
-it('un equipo puede agregar multiples usuarios a la vez', function(){
+it('un equipo puede agregar multiples usuarios a la vez', function () {
     $team = Team::factory()->create(['size' => 3]);
     $users = User::factory(3)->create();
 
+    // Prueba agregar usuarios hasta el límite
     $team->add($users);
+    expect($team->users()->count())->toBe(3); // Verificamos que haya 3 usuarios
 
-    expect($team->users)->count()->toBe(3);
+    // Prueba de regresión: intenta agregar más usuarios de los permitidos
+   /* $this->expectException(Exception::class);
+    $moreUser = User::factory()->create();
+    $team->add($moreUser);*/
 });
 
+it('Prueba de regresion lanza una excepción ', function() {
+
+    $team = Team::factory()->create(['size' => 3]);
+
+    // Creamos una colección de 4 usuarios
+    $users = User::factory(4)->create();
+    try {
+        $team->add($users);
+    } catch (Exception $e) {
+        // Verificamos que se haya lanzado una excepción del tipo Exception
+        $this->assertInstanceOf(Exception::class, $e);
+        return;
+    }
+
+    $this->fail('Se esperaba una excepción al intentar agregar más usuarios de los permitidos.');
+});
+
+
+            
