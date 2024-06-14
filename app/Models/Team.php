@@ -16,9 +16,16 @@ class Team extends Model
         $this->guardAgainstTooManyMembers();
 
         if ($users instanceof User) {
-            return $this->users()->save($users);
-        }
+            $users = collect([$users]);
 
+        }
+        $currentCount = $this->users()->count();
+        $additionalCount = $users->count();
+    
+        if ($currentCount + $additionalCount > $this->size) {
+            throw new Exception('No se pueden añadir mas miembros.');
+        }
+    
         $this->users()->saveMany($users);
     }
 
