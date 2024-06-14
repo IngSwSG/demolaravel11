@@ -2,7 +2,7 @@
 
 use App\Models\Team;
 use App\Models\User;
-
+use Exception;
 it('un equipo puede agrear usuarios', function(){
     $team = Team::factory()->create();
     $user1 = User::factory()->create();
