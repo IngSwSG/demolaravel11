@@ -20,6 +20,8 @@ class TaskFactory extends Factory
         return [
             'user_id' => User::factory(),
             'name' => fake()->sentence(),
+            'priority' => fake()->numberBetween(1, 3), 
+            'completed' => fake()->boolean(),
         ];
     }
 }

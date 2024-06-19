@@ -10,17 +10,18 @@
     </select>
     <button type="submit">Buscar</button>
 </form>
+<ul>
 @foreach ($tasks as $task)
-    <li>
-        <a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})
+<li>
+        <a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }}) - Prioridad: {{ $task->priority }}
         @if ($task->completed)
-            <form action="{{ route('tasks.incomplete', $task) }}" method="POST">
+            <form action="{{ route('tasks.incomplete', $task) }}" method="POST" style="display:inline;">
                 @csrf
                 @method('PUT')
                 <button type="submit">Marcar como incompleta</button>
             </form>
         @else
-            <form action="{{ route('tasks.complete', $task) }}" method="POST">
+            <form action="{{ route('tasks.complete', $task) }}" method="POST" style="display:inline;">
                 @csrf
                 @method('PUT')
                 <button type="submit">Marcar como completada</button>
@@ -28,3 +29,5 @@
         @endif
     </li>
 @endforeach
+</ul>
+

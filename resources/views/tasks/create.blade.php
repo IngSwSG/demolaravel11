@@ -12,7 +12,7 @@
     @csrf
     <div>
         <label for="name">Nombre</label>
-        <input type="text" name="name" id="name">
+        <input type="text" name="name" id="name" value="{{ old('name') }}">
         @error('name')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
@@ -25,6 +25,20 @@
                 <option value="{{ $user->id }}">{{ $user->name }}</option>
             @endforeach
         </select>
+        @error('user_id')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
+    </div>
+    <div>
+        <label for="priority">Prioridad</label>
+        <select name="priority" id="priority">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        @error('priority')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
     </div>
     <button type="submit">Crear tarea</button>
 </form>

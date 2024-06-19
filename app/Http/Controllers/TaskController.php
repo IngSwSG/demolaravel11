@@ -19,12 +19,14 @@ class TaskController extends Controller
                     return $query->where('user_id', $user_id);
                 })
                 ->where('name', 'like', "%$search%")
+                ->orderBy('priority', 'asc')
                 ->get();
         } else {
             $tasks = Task::with('user')
                 ->when($user_id, function ($query, $user_id) {
                     return $query->where('user_id', $user_id);
                 })
+                ->orderBy('priority', 'asc')
                 ->get();
         }
 
@@ -57,7 +59,8 @@ class TaskController extends Controller
 
         $data = $request->validate([
             'name' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'priority' => 'required|integer|min:1|max:3' 
         ]);
 
         Task::create($data);
@@ -79,7 +82,8 @@ class TaskController extends Controller
 
         $data = $request->validate([
             'name' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'priority' => 'required|integer|min:1|max:3'
         ]);
 
         $task->update($data);
