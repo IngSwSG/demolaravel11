@@ -11,13 +11,18 @@ class Task extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'prioridad' => 'integer',
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function path(){
-        return '/tasks/'. $this->id;
+    public function path()
+    {
+        return '/tasks/' . $this->id;
     }
 }
+

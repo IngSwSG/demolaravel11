@@ -22,7 +22,8 @@ it('crea una nueva tarea', function (){
 
     $data = [
         'name' => 'Nueva tarea',
-        'user_id' => $user->id
+        'user_id' => $user->id,
+        'prioridad' => 2
     ];
 
     $response = $this->post('/tasks', $data);
@@ -86,4 +87,17 @@ it('actualizar el usuario de una tarea', function () {
     $response->assertSee('Tarea 1');
     $response->assertDontSee('Tarea 2');
     $response->assertSee('Tarea 3');
+});
+
+it('ordena las tareas por prioridad', function () {
+    $user = User::factory()->create();
+
+    Task::factory()->create(['name' => 'Tarea Baja Prioridad', 'user_id' => $user->id, 'prioridad' => 1]);
+    Task::factory()->create(['name' => 'Tarea Media Prioridad', 'user_id' => $user->id, 'prioridad' => 2]);
+    Task::factory()->create(['name' => 'Tarea Alta Prioridad', 'user_id' => $user->id, 'prioridad' => 3]);
+
+    $response = $this->get('/tasks');
+
+    $response->assertStatus(200);
+    $response->assertSeeInOrder(['Tarea Alta Prioridad', 'Tarea Media Prioridad', 'Tarea Baja Prioridad']);
 });
