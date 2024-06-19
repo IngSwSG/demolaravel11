@@ -12,7 +12,6 @@ class Team extends Model
 
     public function add($users)
     {
-
         $currentSize = $this->users()->count();
         $additionalUsers = is_array($users) ? count($users) : 1;
         $newSize = $currentSize + $additionalUsers;
@@ -22,10 +21,13 @@ class Team extends Model
         }
 
         if (is_array($users)) {
-            $this->users()->attach($users);
+            $this->users()->createMany($users);
         } else {
-            $this->users()->attach($users);}
+            $this->users()->save($users);
+        }
     }
+
+
 
     public function users()
     {

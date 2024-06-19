@@ -21,7 +21,8 @@
     <ul>
         @foreach ($tasks as $task)
             <li>
-                <a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})
+                <a href="{{ route('tasks.show', $task->id) }}">{{ $task->name }}</a> ({{ $task->user->name }})
+                <span>Prioridad: {{ $task->priority }}</span>
                 @if (!$task->completed)
                     <form action="{{ route('tasks.complete', $task->id) }}" method="POST" style="display:inline;">
                         @csrf

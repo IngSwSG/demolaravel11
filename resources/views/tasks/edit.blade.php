@@ -40,6 +40,15 @@
             <input type="hidden" name="completed" value="0">
             <input type="checkbox" name="completed" id="completed" value="1" {{ $task->completed ? 'checked' : '' }}>
         </div>
+        <div>
+            <label for="priority">Prioridad</label>
+            <select name="priority" id="priority">
+                <option value="1" {{ $task->priority == '1' ? 'selected' : '' }}>Prioridad 1</option>
+                <option value="2" {{ $task->priority == '2' ? 'selected' : '' }}>Prioridad 2</option>
+                <option value="3" {{ $task->priority == '3' ? 'selected' : '' }}>Prioridad 3</option>
+            </select>
+        </div>
+        
         <button type="submit">Actualizar tarea</button>
     </form>
 </body>

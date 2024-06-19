@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->timestamps();
             $table->boolean('completed')->default(false);
+            $table->tinyInteger('priority')->default(1);
         });
     }
 

@@ -17,12 +17,13 @@ it('muestra la informacion de una tarea', function () {
 
 it('crea una nueva tarea', function (){
     $this->withoutExceptionHandling();
-    
+
     $user = User::factory()->create();
 
     $data = [
         'name' => 'Nueva tarea',
-        'user_id' => $user->id
+        'user_id' => $user->id,
+        'priority' => 1 // Agrega el campo priority
     ];
 
     $response = $this->post('/tasks', $data);
@@ -30,31 +31,27 @@ it('crea una nueva tarea', function (){
     expect(Task::count())->toBe(1);
     expect(Task::first()->name)->toBe('Nueva tarea');
 
-    // $this->assertDatabaseHas('tasks', [
-    //     'name' => 'Nueva tarea'
-    // ]);
-
-     $response->assertRedirect('/tasks');
-
+    $response->assertRedirect('/tasks');
 });
 
 it('actualizar una tarea', function () {
-   $task = Task::factory()->create([
-       'name' => 'Tarea vieja'
-   ]);
-   
-   $data = [
-       'name' => 'Tarea actualizada',
-       'user_id' => $task->user_id
-   ];
+    $task = Task::factory()->create([
+        'name' => 'Tarea vieja'
+    ]);
+    
+    $data = [
+        'name' => 'Tarea actualizada',
+        'user_id' => $task->user_id,
+        'completed' => false,
+        'priority' => 1 // Agrega el campo priority
+    ];
+ 
+    $response = $this->put($task->path(), $data);
+ 
+    expect($task->fresh()->name)->toBe('Tarea actualizada');
+ });
 
-   $response = $this->put($task->path(), $data);
-
-   expect($task->fresh()->name)->toBe('Tarea actualizada');
-
-});
-
-it('actualizar el usuario de una tarea', function () {
+ it('actualizar el usuario de una tarea', function () {
     $this->withoutExceptionHandling();
 
     $task = Task::factory()->create([
@@ -63,14 +60,15 @@ it('actualizar el usuario de una tarea', function () {
     $otroUsuario = User::factory()->create();
     $data = [
         'name' => 'Tarea vieja',
-        'user_id' => $otroUsuario->id
+        'user_id' => $otroUsuario->id,
+        'completed' => false,
+        'priority' => 1 // Agrega el campo priority
     ];
  
     $response = $this->put($task->path(), $data);
  
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
- 
- });
+});
 
  it('filtra las tareas por usuario', function () {
     // Crear dos usuarios
