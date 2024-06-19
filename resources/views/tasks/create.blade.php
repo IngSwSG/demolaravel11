@@ -1,4 +1,7 @@
-<h1>Creado una tarea</h1>
+html
+Copy code
+<h1>Crear una tarea</h1>
+
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -8,8 +11,10 @@
         </ul>
     </div>
 @endif
+
 <form action="{{ route('tasks.store') }}" method="post">
     @csrf
+
     <div>
         <label for="name">Nombre</label>
         <input type="text" name="name" id="name">
@@ -17,6 +22,7 @@
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>
+
     <div>
         <label for="user_id">Usuario</label>
         <select name="user_id" id="user_id">
@@ -26,5 +32,15 @@
             @endforeach
         </select>
     </div>
+
+    <div>
+        <label for="priority">Prioridad</label>
+        <select name="priority" id="priority">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+    </div>
+
     <button type="submit">Crear tarea</button>
 </form>

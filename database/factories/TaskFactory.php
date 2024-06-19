@@ -21,6 +21,7 @@ class TaskFactory extends Factory
             'user_id' => User::factory(),
             'name' => fake()->sentence(),
             'Complete' => false, // Usa 'Complete' aquí
+            'priority' => $this->faker->numberBetween(1, 3),
         ];
     }
 }

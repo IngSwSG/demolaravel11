@@ -12,27 +12,37 @@ class TaskController extends Controller
     {
         $search = $request->input('search');
         $user_id = $request->input('user_id');
+        $order_by = $request->input('order_by');
+        $tasksQuery = Task::query();
 
-        if ($search) {
-            $tasks = Task::with('user')
-                ->when($user_id, function ($query, $user_id) {
-                    return $query->where('user_id', $user_id);
-                })
-                ->where('name', 'like', "%$search%")
-                ->get();
-        } else {
-            $tasks = Task::with('user')
-                ->when($user_id, function ($query, $user_id) {
-                    return $query->where('user_id', $user_id);
-                })
-                ->get();
+        if (! empty($search)) {
+            $tasksQuery->where('name', 'like', '%'.$search.'%');
         }
 
-        return view('tasks.index', [
-            'tasks' => $tasks,
-            'search' => $search,
-            'users' => User::all(),
-        ]);
+        if (! empty($user_id)) {
+            $tasksQuery->where('user_id', $user_id);
+        }
+
+        if (empty($order_by)) {
+            $tasksQuery->orderBy('priority', 'desc');
+        } else {
+            switch ($order_by) {
+                case 'created_at':
+                    $tasksQuery->orderBy('created_at', 'desc');
+                    break;
+                case 'name':
+                    $tasksQuery->orderBy('name', 'asc');
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        $tasks = $tasksQuery->get();
+
+        $users = User::all();
+
+        return view('tasks.index', compact('tasks', 'users', 'search'));
     }
 
     public function show(Task $task)
@@ -53,15 +63,20 @@ class TaskController extends Controller
 
     public function store(Request $request)
     {
-
         $data = $request->validate([
-            'name' => 'required',
-            'user_id' => 'required',
+            'name' => 'required|string|max:255',
+            'user_id' => 'required|exists:users,id',
+            'priority' => 'required|integer|in:1,2,3',
         ]);
 
-        Task::create($data);
+        Task::create([
+            'name' => $data['name'],
+            'user_id' => $data['user_id'],
+            'priority' => $data['priority'],
+            'Complete' => false,
+        ]);
 
-        return redirect()->route('tasks.index');
+        return redirect()->route('tasks.index')->with('success', 'Tarea creada correctamente.');
     }
 
     public function edit(Task $task)

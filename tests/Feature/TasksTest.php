@@ -23,19 +23,16 @@ it('crea una nueva tarea', function () {
     $data = [
         'name' => 'Nueva tarea',
         'user_id' => $user->id,
+        'priority' => 3, // Aquí puedes definir el valor de prioridad según tu lógica
     ];
 
     $response = $this->post('/tasks', $data);
 
     expect(Task::count())->toBe(1);
     expect(Task::first()->name)->toBe('Nueva tarea');
-
-    // $this->assertDatabaseHas('tasks', [
-    //     'name' => 'Nueva tarea'
-    // ]);
+    expect(Task::first()->priority)->toBe(3); // Verificar que la prioridad se haya guardado correctamente
 
     $response->assertRedirect('/tasks');
-
 });
 
 it('actualizar una tarea', function () {
@@ -116,3 +113,54 @@ it('marca una tarea como completada', function () {
     // Verificar que la respuesta redirige al índice de tareas
     $response->assertRedirect('/tasks');
 });
+function OrdenarTest()
+{
+    $this->withoutExceptionHandling();
+
+    // Crear tareas con diferentes prioridades
+    $task1 = Task::factory()->create([
+        'name' => 'Tarea 1',
+        'priority' => 2,
+    ]);
+    $task2 = Task::factory()->create([
+        'name' => 'Tarea 2',
+        'priority' => 1,
+    ]);
+    $task3 = Task::factory()->create([
+        'name' => 'Tarea 3',
+        'priority' => 3,
+    ]);
+
+    // Crear usuario de prueba
+    $user = User::factory()->create();
+
+    // Realizar solicitud GET a la ruta 'tasks.index' con parámetros de búsqueda y ordenamiento
+    $response = $this->get(route('tasks.index'), [
+        'search' => 'Tarea', // Filtro por nombre de tarea
+        'user_id' => $user->id, // Filtro por usuario
+        'order_by' => 'priority', // Ordenar por prioridad ascendente
+    ]);
+
+    // Asserts para verificar la respuesta
+    $response->assertStatus(200); // Verificar que la respuesta sea exitosa (código 200)
+    $response->assertViewIs('tasks.index'); // Verificar que la vista devuelta sea 'tasks.index'
+
+    // Verificar que la vista contenga las variables adecuadas
+    $response->assertViewHas('tasks');
+    $response->assertViewHas('users');
+
+    // Obtener las tareas ordenadas de la respuesta
+    $tasksInResponse = $response->viewData('tasks');
+
+    // Verificar que se devuelvan todas las tareas esperadas
+    $this->assertCount(3, $tasksInResponse);
+
+    // Verificar el orden correcto de las tareas por prioridad
+    $this->assertEquals('Tarea 3', $tasksInResponse[0]->name);
+    $this->assertEquals('Tarea 1', $tasksInResponse[1]->name);
+    $this->assertEquals('Tarea 2', $tasksInResponse[2]->name);
+
+    // Verificar que se aplican correctamente los filtros de búsqueda y usuario
+    $this->assertEquals('Tarea', $response->original['search']);
+    $this->assertEquals($user->id, $response->original['user_id']);
+}
