@@ -104,3 +104,16 @@ it('marca una tarea como completada', function () {
         'completed' => true,
     ]);
 });
+
+it('ordena las tareas por prioridad', function () {
+    // Crear tres tareas con diferentes prioridades
+    Task::factory()->create(['name' => 'Tarea 1', 'priority' => 3]);
+    Task::factory()->create(['name' => 'Tarea 2', 'priority' => 1]);
+    Task::factory()->create(['name' => 'Tarea 3', 'priority' => 2]);
+
+    // Hacer una solicitud a la ruta 'tasks.index' sin filtrar por usuario
+    $response = $this->get(route('tasks.index'));
+
+    // Verificar que las tareas se muestren en el orden correcto de prioridad
+    $response->assertSeeInOrder(['Tarea 2', 'Tarea 3', 'Tarea 1']);
+});
