@@ -1,4 +1,4 @@
-<h1>Creado una tarea</h1>
+<h1>Creando una tarea</h1>
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -24,6 +24,14 @@
             @foreach ($users as $user)
                 <option value="{{ $user->id }}">{{ $user->name }}</option>
             @endforeach
+        </select>
+    </div>
+    <div>
+        <label for="priority">Prioridad</label>
+        <select name="priority" id="priority">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
         </select>
     </div>
     <button type="submit">Crear tarea</button>

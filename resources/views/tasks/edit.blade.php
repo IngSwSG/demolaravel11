@@ -27,5 +27,15 @@
             @endforeach
         </select>
     </div>
+
+    <div>
+        <label for="priority">Prioridad</label>
+        <select name="priority" id="priority">
+            <option value="1" {{ $task->priority == 1 ? 'selected' : '' }}>1</option>
+            <option value="2" {{ $task->priority == 2 ? 'selected' : '' }}>2</option>
+            <option value="3" {{ $task->priority == 3 ? 'selected' : '' }}>3</option>
+        </select>
+    </div>
+
     <button type="submit">Actualizar tarea</button>
 </form>

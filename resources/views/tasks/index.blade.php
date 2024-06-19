@@ -21,7 +21,7 @@
                 @method('PUT')
                 <button type="submit">Completar</button>
             </form>
-            <a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})
+            <a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }}) Prioridad: {{ $task->priority }}
         </li>
     @endforeach
 </ul>
@@ -35,7 +35,7 @@
                 @method('PUT')
                 <button type="submit">Marcar como incompleta</button>
             </form>
-            <a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})
+            <a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }}) Prioridad: {{ $task->priority }}
         </li>
     @endforeach
 </ul>

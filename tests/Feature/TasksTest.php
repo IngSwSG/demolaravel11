@@ -127,4 +127,29 @@ it('actualizar el usuario de una tarea', function () {
         'completed' => true,
     ]);
 });
+
+/***Prioridades***/
+
+
+it('tareas ordenadas por prioridad de mayor a menor', function () {
+    $this->withoutExceptionHandling();
+
+    // Arrange
+    $user = User::factory()->create();
+    $task1 = Task::factory()->create(['user_id' => $user->id, 'priority' => 1]);
+    $task2 = Task::factory()->create(['user_id' => $user->id, 'priority' => 3]);
+    $task3 = Task::factory()->create(['user_id' => $user->id, 'priority' => 2]);
+
+    // Act
+    $response = $this->get(route('tasks.index'));
+
+    // Assert
+    $response->assertStatus(200);
+
+    $response->assertSeeInOrder([
+        'Prioridad: 3', 
+        'Prioridad: 2', 
+        'Prioridad: 1'
+    ]);
+});
   
