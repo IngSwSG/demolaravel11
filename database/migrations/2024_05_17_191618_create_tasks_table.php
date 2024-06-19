@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->boolean('completed')->default(false);
+            $table->tinyInteger('priority')->default(1);
             $table->timestamps();
         });
     }
@@ -28,3 +28,4 @@ return new class extends Migration
         Schema::dropIfExists('tasks');
     }
 };
+
