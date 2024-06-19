@@ -22,19 +22,18 @@ it('crea una nueva tarea', function (){
 
     $data = [
         'name' => 'Nueva tarea',
-        'user_id' => $user->id
+        'user_id' => $user->id,
+        'priority' => 3
     ];
 
     $response = $this->post('/tasks', $data);
 
-    expect(Task::count())->toBe(1);
-    expect(Task::first()->name)->toBe('Nueva tarea');
-
-    // $this->assertDatabaseHas('tasks', [
-    //     'name' => 'Nueva tarea'
-    // ]);
-
-     $response->assertRedirect('/tasks');
+    $response->assertRedirect('/tasks');
+    $this->assertDatabaseHas('tasks', [
+        'name' => 'Nueva tarea',
+        'user_id' => $user->id,
+        'priority' => 3
+    ]);
 
 });
 
@@ -109,4 +108,19 @@ it('actualizar el usuario de una tarea', function () {
         'id' => $task->id,
         'completed' => true,
     ]);
+ });
+
+ it('Probar Ordenar tareas por prioridad', function(){
+    // Arrange
+    $user = User::factory()->create();
+    $task1 = Task::factory()->create(['user_id' => $user->id, 'priority' => 1, 'name' => 'Tarea 1']);
+    $task2 = Task::factory()->create(['user_id' => $user->id, 'priority' => 3, 'name' => 'Tarea 2']);
+    $task3 = Task::factory()->create(['user_id' => $user->id, 'priority' => 2, 'name' => 'Tarea 3']);
+
+    // Act
+    $response = $this->get('/tasks');
+
+    // Assert
+    $response->assertSeeInOrder(['Tarea 2', 'Tarea 3', 'Tarea 1']);
+
  });

@@ -25,6 +25,7 @@
         @else
             <span>Completada</span>
         @endif
+        - Prioridad: {{ $task->priority }}
     </li>
 @endforeach
 </ul>
