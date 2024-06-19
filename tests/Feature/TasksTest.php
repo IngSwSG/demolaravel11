@@ -1,5 +1,4 @@
 <?php
-
 use App\Models\Task;
 use App\Models\User;
 
@@ -21,7 +20,8 @@ it('crea una nueva tarea', function (){
 
     $data = [
         'name' => 'Nueva tarea',
-        'user_id' => $user->id
+        'user_id' => $user->id,
+        'priority' => 1 
     ];
 
     $response = $this->post('/tasks', $data);
@@ -29,21 +29,19 @@ it('crea una nueva tarea', function (){
     expect(Task::count())->toBe(1);
     expect(Task::first()->name)->toBe('Nueva tarea');
 
-    // $this->assertDatabaseHas('tasks', [
-    //     'name' => 'Nueva tarea'
-    // ]);
-
-     $response->assertRedirect('/tasks');
+    $response->assertRedirect('/tasks');
 });
 
 it('actualizar una tarea', function () {
     $task = Task::factory()->create([
-        'name' => 'Tarea vieja'
+        'name' => 'Tarea vieja',
+        'priority' => 1 
     ]);
     
     $data = [
         'name' => 'Tarea actualizada',
-        'user_id' => $task->user_id
+        'user_id' => $task->user_id,
+        'priority' => 1 
     ];
 
     $response = $this->put($task->path(), $data);
@@ -55,12 +53,14 @@ it('actualizar el usuario de una tarea', function () {
     $this->withoutExceptionHandling();
 
     $task = Task::factory()->create([
-        'name' => 'Tarea vieja'
+        'name' => 'Tarea vieja',
+        'priority' => 1 
     ]);
     $otroUsuario = User::factory()->create();
     $data = [
         'name' => 'Tarea vieja',
-        'user_id' => $otroUsuario->id
+        'user_id' => $otroUsuario->id,
+        'priority' => 1 
     ];
 
     $response = $this->put($task->path(), $data);
@@ -74,12 +74,14 @@ it('filtra las tareas por usuario', function () {
 
     $task1 = Task::factory()->create([
         'name' => 'Tarea del usuario 1',
-        'user_id' => $user1->id
+        'user_id' => $user1->id,
+        'priority' => 1 
     ]);
 
     $task2 = Task::factory()->create([
         'name' => 'Tarea del usuario 2',
-        'user_id' => $user2->id
+        'user_id' => $user2->id,
+        'priority' => 1 
     ]);
 
     $response = $this->get('/tasks?user_id=' . $user1->id);
@@ -97,7 +99,8 @@ it('filtra las tareas por usuario', function () {
 
 it('marca una tarea como completada', function () {
     $task = Task::factory()->create([
-        'completed' => false
+        'completed' => false,
+        'priority' => 1 
     ]);
 
     $response = $this->patch(route('tasks.complete', $task->id));
@@ -106,4 +109,25 @@ it('marca una tarea como completada', function () {
     $this->assertEquals(1, $task->fresh()->completed);
 });
 
+it('ordena las tareas por prioridad', function () {
+    
+    $user = User::factory()->create();
 
+    
+    $task1 = Task::factory()->create(['priority' => 1, 'user_id' => $user->id]);
+    $task2 = Task::factory()->create(['priority' => 2, 'user_id' => $user->id]);
+    $task3 = Task::factory()->create(['priority' => 3, 'user_id' => $user->id]);
+
+    
+    $response = $this->get('/tasks');
+
+    
+    $response->assertStatus(200);
+
+  
+    $response->assertSeeInOrder([
+        $task3->name,
+        $task2->name,
+        $task1->name,
+    ]);
+});

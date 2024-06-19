@@ -1,4 +1,4 @@
-<h1>Creado una tarea</h1>
+<h1>Creando una tarea</h1>
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -25,6 +25,20 @@
                 <option value="{{ $user->id }}">{{ $user->name }}</option>
             @endforeach
         </select>
+        @error('user_id')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
+    </div>
+    <div>
+        <label for="priority">Prioridad</label>
+        <select name="priority" id="priority" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        @error('priority')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
     </div>
     <button type="submit">Crear tarea</button>
 </form>

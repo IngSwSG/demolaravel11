@@ -1,7 +1,7 @@
+<!-- tasks/index.blade.php -->
 <h1 style="color:red;">Tareas</h1>
 <a href="/tasks/create" style="color:indigo;">Crear</a>
 <form action="{{ route('tasks.index') }}">
- 
     <input type="text" name="search" value="{{ $search }}">
     <select name="user_id" id="user_id">
         <option value="">Todos los usuarios</option>
@@ -10,8 +10,12 @@
         @endforeach
     </select>
     <button type="submit">Buscar</button>
-
 </form>
+
+<ul>
 @foreach ($tasks as $task)
-    <li><a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }})</li>
+    <li>
+        <a href="{{ $task->path() }}">{{ $task->name }}</a> ({{ $task->user->name }}) - Prioridad: {{ $task->priority }}
+    </li>
 @endforeach
+</ul>

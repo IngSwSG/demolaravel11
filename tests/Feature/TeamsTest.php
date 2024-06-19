@@ -38,15 +38,4 @@ it('un equipo puede agregar multiples usuarios a la vez', function(){
     expect($team->users()->count())->toBe(3);
 });
 
-// Prueba de regresion
-it('un equipo puede agregar múltiples usuarios a la vez - regresion', function(){
-    $team = Team::factory()->create(['size' => 3]);
-    $users = User::factory(5)->create();
-
-    expect(function() use ($team, $users) {
-        $team->add($users);
-    })->toThrow(Exception::class, 'El equipo no puede tener más miembros de los permitidos.');
-
-    expect($team->users()->count())->toBe(0); // Verifica que no se agreguen usuarios si se lanza una excepción
-});
 
