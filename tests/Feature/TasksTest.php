@@ -17,24 +17,23 @@ it('muestra la informacion de una tarea', function () {
 
 it('crea una nueva tarea', function (){
     $this->withoutExceptionHandling();
-
+    
     $user = User::factory()->create();
 
     $data = [
         'name' => 'Nueva tarea',
-        'user_id' => $user->id
+        'user_id' => $user->id,
+        'priority' => 3
     ];
 
     $response = $this->post('/tasks', $data);
 
-    expect(Task::count())->toBe(1);
-    expect(Task::first()->name)->toBe('Nueva tarea');
-
-    // $this->assertDatabaseHas('tasks', [
-    //     'name' => 'Nueva tarea'
-    // ]);
-
-     $response->assertRedirect('/tasks');
+    $response->assertRedirect('/tasks');
+    $this->assertDatabaseHas('tasks', [
+        'name' => 'Nueva tarea',
+        'user_id' => $user->id,
+        'priority' => 3
+    ]);
 
 });
 
@@ -108,4 +107,33 @@ it('marca una tarea como completada', function () {
     expect($task->fresh()->completed)->toBeTrue();
 
     $response->assertRedirect(route('tasks.index'));
+});
+
+it('Probar ordenamiento de tareas por prioridad',function() {
+    $user = User::factory()->create();
+        $data = [
+            'name' => 'Nueva tarea',
+            'user_id' => $user->id,
+            'priority' => 3
+        ];
+
+        $response = $this->post('/tasks', $data);
+
+        $response->assertRedirect('/tasks');
+        $this->assertDatabaseHas('tasks', [
+            'name' => 'Nueva tarea',
+            'user_id' => $user->id,
+            'priority' => 3
+        ]);
+});
+
+it('Las tareas son ordenadas por prioridad', function() {
+    $user = User::factory()->create();
+        $task1 = Task::factory()->create(['user_id' => $user->id, 'priority' => 1, 'name' => 'Tarea 1']);
+        $task2 = Task::factory()->create(['user_id' => $user->id, 'priority' => 3, 'name' => 'Tarea 2']);
+        $task3 = Task::factory()->create(['user_id' => $user->id, 'priority' => 2, 'name' => 'Tarea 3']);
+
+        $response = $this->get('/tasks');
+
+        $response->assertSeeInOrder(['Tarea 2', 'Tarea 3', 'Tarea 1']);
 });
