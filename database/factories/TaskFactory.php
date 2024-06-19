@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -11,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class TaskFactory extends Factory
 {
-    protected $model = Task::class;
     /**
      * Define the model's default state.
      *
@@ -22,6 +20,8 @@ class TaskFactory extends Factory
         return [
             'user_id' => User::factory(),
             'name' => fake()->sentence(),
+            'priority' => $this->faker->numberBetween(1, 3) 
         ];
     }
 }
+
