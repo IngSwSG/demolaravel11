@@ -11,9 +11,6 @@ class Task extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'completed' => 'boolean',
-    ];
 
     public function user()
     {
@@ -23,8 +20,5 @@ class Task extends Model
     public function path(){
         return '/tasks/'. $this->id;
     }
-    public function markAsCompleted()
-    {
-        $this->update(['completed' => true]);
-    }
 }
+
