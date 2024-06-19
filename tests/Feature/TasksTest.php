@@ -22,7 +22,8 @@ it('crea una nueva tarea', function (){
 
     $data = [
         'name' => 'Nueva tarea',
-        'user_id' => $user->id
+        'user_id' => $user->id,
+        'priority'=>1
     ];
 
     $response = $this->post('/tasks', $data);
@@ -45,7 +46,8 @@ it('actualizar una tarea', function () {
    
    $data = [
        'name' => 'Tarea actualizada',
-       'user_id' => $task->user_id
+       'user_id' => $task->user_id,
+       'priority'=>2
    ];
 
    $response = $this->put($task->path(), $data);
@@ -63,7 +65,8 @@ it('actualizar el usuario de una tarea', function () {
     $otroUsuario = User::factory()->create();
     $data = [
         'name' => 'Tarea vieja',
-        'user_id' => $otroUsuario->id
+        'user_id' => $otroUsuario->id,
+        'priority'=>1
     ];
  
     $response = $this->put($task->path(), $data);
