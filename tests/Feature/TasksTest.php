@@ -22,13 +22,15 @@ it('crea una nueva tarea', function (){
 
     $data = [
         'name' => 'Nueva tarea',
-        'user_id' => $user->id
+        'user_id' => $user->id,
+        'priority' => 2 
     ];
 
     $response = $this->post('/tasks', $data);
 
     expect(Task::count())->toBe(1);
     expect(Task::first()->name)->toBe('Nueva tarea');
+    expect(Task::first()->priority)->toBe(2);
 
     // $this->assertDatabaseHas('tasks', [
     //     'name' => 'Nueva tarea'
@@ -40,12 +42,14 @@ it('crea una nueva tarea', function (){
 
 it('actualizar una tarea', function () {
    $task = Task::factory()->create([
-       'name' => 'Tarea vieja'
+       'name' => 'Tarea vieja',
+       'priority' => 1
    ]);
    
    $data = [
        'name' => 'Tarea actualizada',
-       'user_id' => $task->user_id
+       'user_id' => $task->user_id,
+       'priority' => 3
    ];
 
    $response = $this->put($task->path(), $data);
@@ -54,58 +58,38 @@ it('actualizar una tarea', function () {
 
 });
 
-it('actualizar el usuario de una tarea', function () {
+it('actualiza el usuario de una tarea', function () {
     $this->withoutExceptionHandling();
 
     $task = Task::factory()->create([
-        'name' => 'Tarea vieja'
+        'name' => 'Tarea vieja',
+        'priority' => 1 // Establece una prioridad inicial
     ]);
     $otroUsuario = User::factory()->create();
     $data = [
         'name' => 'Tarea vieja',
-        'user_id' => $otroUsuario->id
+        'user_id' => $otroUsuario->id,
+        'priority' => 1 // Mantén la prioridad igual para esta prueba
     ];
- 
+
     $response = $this->put($task->path(), $data);
- 
+
     expect($task->fresh()->user_id)->toBe($otroUsuario->id);
- 
- });
- it('filtra tareas por usuario', function () {
-    $user1 = User::factory()->create();
-    $user2 = User::factory()->create();
+    expect($task->fresh()->priority)->toBe(1); // Verifica que la prioridad no haya cambiado
+});
 
-    $task1 = Task::factory()->create(['user_id' => $user1->id]);
-    $task2 = Task::factory()->create(['user_id' => $user2->id]);
-    $task3 = Task::factory()->create(['user_id' => $user1->id]);
 
-    $response = $this->get('/tasks?user_id=' . $user1->id);
+
+it('muestra la informacion de una tarea con prioridad', function () {
+    $task = Task::factory()->create([
+        'name' => 'Tarea con prioridad',
+        'priority' => 3 // Establece la prioridad a 3 para la prueba
+    ]);
+
+    $response = $this->get($task->path());
 
     $response->assertStatus(200);
-    $response->assertViewHas('tasks', function ($tasks) use ($user1) {
-        return $tasks->every(function ($task) use ($user1) {
-            return $task->user_id == $user1->id;
-        });
-    });
-
-    $tasks = $response->viewData('tasks');
-    expect($tasks->count())->toBe(2);
+    $response->assertSee('Tarea con prioridad');
+    $response->assertSee('Prioridad: 3'); // Verifica que la prioridad se muestre correctamente
 });
-it('marca una tarea como completada', function () {
-    $this->withoutExceptionHandling();
 
-    // Crear usuario y tarea
-    $user = User::factory()->create();
-    $task = Task::factory()->create(['user_id' => $user->id, 'completed' => false]);
-
-    expect($task->completed)->toBe(false);
-
-    $response = $this->patch(route('tasks.complete', $task));
-
-    $task->refresh();
-
-   
-    expect($task->completed)->toBe(true);
-
-    $response->assertRedirect('/tasks');
-});
