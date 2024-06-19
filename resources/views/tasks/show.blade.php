@@ -1,5 +1,6 @@
 <h1>Tarea # {{ $task->id }}</h1>
 <div>
+    <p>Prioridad: {{ $task->priority }}</p>
     {{ $task->name }}
     <p>{{ $task->created_at }}</p>
     <p>
