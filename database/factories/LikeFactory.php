@@ -12,15 +12,14 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class LikeFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = Like::class;
+
+    public function definition()
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'likeable_id' => Post::factory(),
+            'likeable_type' => Post::class,
         ];
     }
 }
