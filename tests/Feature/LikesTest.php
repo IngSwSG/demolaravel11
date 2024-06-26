@@ -8,7 +8,7 @@ it('a user can like a post', function () {
     $post = Post::factory()->create();
 
     $this->actingAs($user);
-    
+
     $post->like();
 
     $this->assertDatabaseHas('likes', [
