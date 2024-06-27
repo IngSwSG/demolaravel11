@@ -38,7 +38,6 @@ class DatabaseSeeder extends Seeder
         Task::factory(2)->create([
             'user_id' => $user2->id,
         ]);
-
         Schema::enableForeignKeyConstraints();
     }
 }
