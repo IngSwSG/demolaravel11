@@ -36,11 +36,6 @@ class TaskController extends Controller
         ]);
     }
 
-    public function complete(Task $task)
-    {
-    $task->markAsCompleted();
-    return response()->json(['message' => 'Tarea completada con éxito']);
-    }
     function show(Task $task)
     {
 
@@ -98,4 +93,12 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index');
     }
+
+    public function markAsCompleted($id)
+    {
+        $task = Task::findOrFail($id);
+        $task->markAsCompleted();
+        return redirect()->route('tasks.index')->with('success', 'Task marked as completed');
+    }
+
 }
